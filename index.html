@@ -1,0 +1,245 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Happy Teddy Day Mumma 🧸 — Cute Version</title><style>
+  :root{ --card-w:380px; --accent:#ff6b81; }
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Inter, 'Segoe UI', system-ui, Arial;background:linear-gradient(180deg,#fff6f8 0%, #fffefc 100%);} 
+  .card{width:var(--card-w);background:linear-gradient(180deg,#ffffff, #fff7fb);padding:20px;border-radius:20px;box-shadow:0 20px 50px rgba(240,84,120,0.12);text-align:center;overflow:hidden}
+  h1{margin:4px 0 10px;font-size:20px;color:var(--accent);letter-spacing:0.2px}
+
+  /* Cute teddy area */
+  .stage{display:flex;justify-content:center;align-items:center;height:210px}
+  svg{width:220px;height:200px;overflow:visible}
+
+  /* stroke drawing initial state */
+  .line{fill:none;stroke:#5b3a2a;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+  .fill-brown{fill:#dcae84;stroke:none}
+  .fill-light{fill:#ffe8d6;stroke:none}
+  .blush{fill:#ffd1d1;opacity:0.95}
+
+  /* animations */
+  .wobble{animation:wobble 2.2s ease-in-out infinite}
+  @keyframes wobble{0%{transform:rotate(0)}25%{transform:rotate(-3deg)}50%{transform:rotate(0)}75%{transform:rotate(3deg)}100%{transform:rotate(0)}}
+
+  .bounce{animation:bounce 1.8s ease-in-out infinite}
+  @keyframes bounce{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+
+  /* eye blink */
+  .eye{transform-origin:center;animation:blink 4s infinite}
+  @keyframes blink{0%,8%,100%{transform:scaleY(1)}9%,11%{transform:scaleY(0.08)}}
+
+  /* stroke-draw helper (we animate dashoffset in JS) */
+  .drawn{stroke-dasharray:1;stroke-dashoffset:0}
+
+  /* message + image */
+  .surprise{opacity:0;transform:translateY(8px);transition:all .45s ease;max-height:0;overflow:hidden}
+  .surprise.visible{opacity:1;transform:translateY(0);max-height:420px;margin-top:12px}
+  .message{font-size:15px;color:#333;margin:6px 0}
+  .message strong{color:var(--accent)}
+  .surprise img{width:100%;border-radius:14px;margin-top:10px;display:block}
+
+  /* buttons */
+  .controls{margin-top:8px}
+  .btn{background:var(--accent);color:#fff;border:none;padding:12px 18px;border-radius:26px;font-size:15px;cursor:pointer;box-shadow:0 8px 18px rgba(255,107,129,0.18)}
+  .btn.secondary{background:#fff;border:1px solid #ffe6ec;color:var(--accent);margin-left:10px}
+
+  /* floating hearts */
+  .hearts{height:36px;margin-top:8px;position:relative}
+  .heart{position:absolute;opacity:0;transform:translateY(6px) scale(.8);transition:all .6s ease}
+  .heart.show{opacity:1;transform:translateY(0) scale(1)}
+
+  /* responsive */
+  @media (max-width:420px){:root{--card-w:340px}}
+</style></head>
+<body>
+  <div class="card">
+    <h1>Happy Teddy Day Mumma 💖</h1><div class="stage">
+  <!-- Cute round teddy built from circles + paths for friendlier look -->
+  <svg id="teddySVG" viewBox="0 0 220 200" aria-hidden="true">
+    <!-- Ears -->
+    <g id="ears" class="wobble">
+      <circle id="earL" class="fill-brown line" cx="56" cy="46" r="30" />
+      <circle id="earR" class="fill-brown line" cx="164" cy="46" r="30" />
+      <circle class="fill-light" cx="56" cy="46" r="16" />
+      <circle class="fill-light" cx="164" cy="46" r="16" />
+    </g>
+
+    <!-- Head -->
+    <g id="headGroup" class="bounce">
+      <ellipse id="headStroke" class="line" cx="110" cy="86" rx="60" ry="56" />
+      <ellipse id="headFill" class="fill-brown" cx="110" cy="86" rx="56" ry="52" />
+
+      <!-- Eyes -->
+      <g class="eye">
+        <ellipse id="eyeL" cx="90" cy="82" rx="6" ry="8" fill="#2b1b14" />
+        <ellipse id="eyeR" cx="130" cy="82" rx="6" ry="8" fill="#2b1b14" />
+      </g>
+
+      <!-- Blush -->
+      <ellipse cx="78" cy="98" rx="10" ry="6" class="blush" />
+      <ellipse cx="142" cy="98" rx="10" ry="6" class="blush" />
+
+      <!-- Nose + smile -->
+      <path id="noseSmile" class="line" d="M108 92 q6 6 12 0" stroke-linecap="round" stroke-width="4" fill="none" />
+      <circle cx="110" cy="94" r="4" fill="#2b1b14" />
+    </g>
+
+    <!-- Body -->
+    <g id="bodyGroup">
+      <ellipse id="bodyStroke" class="line" cx="110" cy="150" rx="56" ry="44" />
+      <ellipse id="bodyFill" class="fill-brown" cx="110" cy="150" rx="52" ry="40" />
+
+      <!-- Arms -->
+      <path id="armL" class="line" d="M70 132 q-18 10 -24 22" stroke-width="6" />
+      <path id="armR" class="line" d="M150 132 q18 10 24 22" stroke-width="6" />
+    </g>
+
+    <!-- Little heart on chest (fades/pop) -->
+    <path id="heartChest" d="M110 142 c-6 -6 -14 -6 -18 0 c-4 6 -1 14 6 18 c7 4 12 4 18 0 c7 -4 10 -12 6 -18 c-4 -6 -12 -6 -12 -6z" fill="#ff8fa6" opacity="0" />
+  </svg>
+</div>
+
+<div class="controls">
+  <button class="btn" id="surpriseBtn">Tap to see your teddy 🧸</button>
+</div>
+
+<div class="hearts" id="hearts">
+  <div class="heart" style="left:40%;font-size:18px">💖</div>
+  <div class="heart" style="left:48%;font-size:22px">✨</div>
+  <div class="heart" style="left:58%;font-size:16px">💕</div>
+</div>
+
+<div class="surprise" id="surpriseBox">
+  <div class="message" id="sweetMsg"></div>
+
+  <!-- Image insert line: hidden until message appears -->
+  <div id="imgInsertLine" style="display:none;margin-top:10px;text-align:center">
+    <label style="font-size:14px;color:#555;">Add your image: <input type="file" id="imgInput" accept="image/*" style="margin-left:8px"></label>
+  </div>
+
+  <!-- replace 'mumma.jpg' with your image file (same folder) or use the file input above -->
+  <img id="surpriseImg" src="mumma.jpg" alt="Teddy Day Image" onerror="this.style.display='none'" style="display:block;margin-top:12px">
+</div>
+  <img id="surpriseImg" src="mumma.jpg" alt="Teddy Day Image" onerror="this.style.display='none'">
+</div>
+
+  </div><script>
+  // Grab SVG parts
+  const svg = document.getElementById('teddySVG');
+  const paths = Array.from(svg.querySelectorAll('.line'));
+
+  // prepare strokes for drawing
+  paths.forEach((p)=>{
+    const len = p.getTotalLength ? p.getTotalLength() : 120;
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = len;
+    p.getBoundingClientRect(); // force reflow
+  });
+
+  const surpriseBtn = document.getElementById('surpriseBtn');
+  const surpriseBox = document.getElementById('surpriseBox');
+  const surpriseImg = document.getElementById('surpriseImg');
+  const sweetMsg = document.getElementById('sweetMsg');
+  const hearts = document.getElementById('hearts');
+  const heartEls = hearts.querySelectorAll('.heart');
+  const heartChest = document.getElementById('heartChest');
+  const stage = document.querySelector('.stage');
+  const controls = document.querySelector('.controls');
+
+  // new elements for image insertion
+  const imgInsertLine = document.getElementById('imgInsertLine');
+  const imgInput = document.getElementById('imgInput');
+
+  function animateDrawAndFill(){
+    // stagger draw
+    paths.forEach((p,i)=>{
+      const dur = 550; const delay = i*140;
+      p.style.transition = `stroke-dashoffset ${dur}ms cubic-bezier(.2,.9,.3,1) ${delay}ms`;
+      p.style.strokeDashoffset = 0;
+    });
+
+    // show chest heart after drawing
+    setTimeout(()=>{ heartChest.style.transition='opacity 350ms ease'; heartChest.style.opacity=1; }, paths.length*140 + 250);
+
+    // playful ear wobble
+    const ears = document.getElementById('ears');
+    ears.classList.add('wobble');
+    setTimeout(()=>ears.classList.remove('wobble'), 1600);
+  }
+
+  function revealMessageAndImage(){
+    // hide teddy stage + controls + hearts with fade
+    stage.style.transition = 'opacity 420ms ease';
+    controls.style.transition = 'opacity 420ms ease';
+    hearts.style.transition = 'opacity 420ms ease';
+
+    stage.style.opacity = 0;
+    controls.style.opacity = 0;
+    hearts.style.opacity = 0;
+
+    // after fade out, remove them from layout then show message+image
+    setTimeout(()=>{
+      stage.style.display = 'none';
+      controls.style.display = 'none';
+      hearts.style.display = 'none';
+
+      // set the exact heartfelt message
+      sweetMsg.innerHTML = `I love you soooo much <strong>Amma</strong> 💗<br/>I am your small teddy bear who loves you sooooo much 🧸<br/>My babie, smile please 😊<br/><br/>Ummmmmmmmmmahhhhhhhhhhh 💋💖<br/><strong>I love you sooo much!</strong>`;
+
+      // reveal the message box (message first, image below it)
+      surpriseBox.classList.add('visible');
+
+      // show the image-insert line so user can add their image
+      if(imgInsertLine) imgInsertLine.style.display = 'block';
+
+      // animate hearts popping around (small delay)
+      heartEls.forEach((el,i)=> setTimeout(()=>el.classList.add('show'), 320 + i*160));
+
+      // fade image in if present (mumma.jpg or previously selected)
+      if(surpriseImg && surpriseImg.complete && surpriseImg.naturalWidth){
+        surpriseImg.style.opacity = 0; surpriseImg.style.transition = 'opacity 520ms ease 220ms';
+        setTimeout(()=> surpriseImg.style.opacity = 1, 300);
+      }
+    }, 480);
+  }
+
+  // image selection handler: show chosen image below message
+  if(imgInput){
+    imgInput.addEventListener('change', (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev){
+        // set selected image as surprise image
+        surpriseImg.src = ev.target.result;
+        surpriseImg.style.display = 'block';
+        surpriseImg.style.opacity = 0;
+        surpriseImg.style.transition = 'opacity 520ms ease';
+        setTimeout(()=> surpriseImg.style.opacity = 1, 50);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  surpriseBtn.addEventListener('click', ()=>{
+    // disable to prevent double clicks
+    surpriseBtn.disabled = true; surpriseBtn.style.cursor='default';
+
+    // animate drawing on-screen
+    animateDrawAndFill();
+
+    // calculate when drawing finished (approx)
+    const totalDelay = paths.length*140 + 700;
+    setTimeout(()=>{
+      revealMessageAndImage();
+      // enable button again if needed (not necessary since controls hidden)
+      surpriseBtn.disabled = false; surpriseBtn.style.cursor='pointer';
+    }, totalDelay);
+  });
+
+  // make Enter key accessible
+  surpriseBtn.addEventListener('keyup', (e)=>{ if(e.key==='Enter') surpriseBtn.click(); });
+</script></body>
+</html>
